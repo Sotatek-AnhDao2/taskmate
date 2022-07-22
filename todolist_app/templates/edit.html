@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+    <title>Edit</title>
+{% endblock title %}
+
+{% block content %}
+{% if task_obj.manage == request.user  %}
+<form method="POST"> 
+    {% csrf_token %}   
+    <div class="mb-3">    
+      <input type="text" class="form-control" name="task" placeholder={{task_obj.task}}>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" name='done'>
+      <label class="form-check-label" for="exampleCheck1">Have you done it yet ?</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% else %}
+<h1>Access retricted</h1>
+  {% endif %}
+{% endblock content %}

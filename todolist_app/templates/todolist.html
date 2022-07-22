@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}
+<title>TodoList</title>
+{% endblock title %}
+{% block content %}
+<h1>{{welcome}}</h1>
+</br>
+{% if messages %}
+    {% for mes in messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{mes}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+<form method="POST"> 
+    {% csrf_token %}   
+    <div class="mb-3">    
+      <input type="text" class="form-control" name="task" placeholder="New Task?">
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" name='done'>
+      <label class="form-check-label" for="exampleCheck1">Have you done it yet ?</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</br>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Task</th>
+        <th scope="col">Status</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for task_obj in all_tasks %}
+        {% if task_obj.done  %}
+      <tr>
+        <td>{{task_obj.id}}</td>
+        <td>{{task_obj.task}}</td>
+        <td><a class="btn btn-link" href="{% url 'incompleted' task_obj.id %}" role="button">Mark as incompleted</a></td>
+        <td><a class="btn btn-primary" href="{% url 'edit' task_obj.id %}" role="button">Edit</a></td>
+        <td><a class="btn btn-danger" href="{% url 'delete' task_obj.id %}" role="button">Delete</a></td>
+      </tr>
+      {% else %}
+      <tr>
+        <td>{{task_obj.id}}</td>
+        <td>{{task_obj.task}}</td>
+        <td><a class="btn btn-link" href="{% url 'completed' task_obj.id %}" role="button">Mark as completed</a></td>
+        <td><a class="btn btn-primary" href="{% url 'edit' task_obj.id %}" role="button">Edit</a></td>
+        <td><a class="btn btn-danger" href="{% url 'delete' task_obj.id %}" role="button">Delete</a></td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+   
+      <li class="page-item"><a class="page-link" href="?pg={{page_obj.start_index}}"><<</a></li>
+    {% if all_tasks.has_previous %}
+      <li class="page-item"><a class="page-link" href="?pg={{all_tasks.previous_page_number}}">{{all_tasks.previous_page_number}}</a></li>
+    {% endif %}  
+      <li class="page-item"><a class="page-link" href="?pg={{all_tasks.number}}">{{all_tasks.number}}</a></li>
+    {% if all_tasks.has_next %}
+      <li class="page-item"><a class="page-link" href="?pg={{all_tasks.next_page_number}}">{{all_tasks.next_page_number}}</a></li>
+    {% endif %}
+      <li class="page-item"><a class="page-link" href="?pg={{all_tasks.end_index}}">>></a></li>
+    
+    </ul>
+  </nav>
+{% endblock content %}
